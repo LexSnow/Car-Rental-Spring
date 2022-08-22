@@ -11,6 +11,5 @@ public interface CarService {
 
 public List<Car> listAvailableCars();
 public List<Car> listRentedCars();
-public List<History> listCarHistory(Long id);
 
 }

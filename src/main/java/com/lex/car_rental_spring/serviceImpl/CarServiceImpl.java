@@ -7,7 +7,6 @@ import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,21 +22,6 @@ public class CarServiceImpl implements CarService {
             return carRepository.findByRentedFalse().stream().sorted(Comparator.comparing(Car::getCity).thenComparingInt(Car::getManufactured_year)).collect(Collectors.toList());
         } catch (CarNotFoundException c) {
             System.out.println("Nie ma dostępnych samochodów." + c.getMessage());
-        }
-        return null;
-    }
-
-
-    @Override
-    public List<History> listCarHistory(Long id){
-        try{
-            return carRepository.findById(id).get().getRentalHistory();
-        } catch(Throwable t) {
-            if(!carRepository.existsById(id)){
-                System.out.println("Nie ma samochodu o takim id." + t.getMessage());
-            } else {
-                System.out.println("Historia samochodu jest pusta." + t.getMessage());
-            }
         }
         return null;
     }
