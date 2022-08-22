@@ -52,10 +52,6 @@ public class Car {
         this.from_date = from_date;
     }
 
-    public void setRented() {
-        this.rented = !this.rented;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

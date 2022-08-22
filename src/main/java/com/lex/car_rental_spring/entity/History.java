@@ -10,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "CarRentalHistory")
+@ToString
 public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,10 +18,7 @@ public class History {
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
-    @ToString.Include
     private String from_date;
-    @ToString.Include
     private String due_date;
-    @ToString.Include
     private Integer state_value;
 }
