@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface CarService {
 
-public void listAvailableCars();
-public void listRentedCars();
-public void listCarHistory(Long id);
+public List<Car> listAvailableCars();
+public List<Car> listRentedCars();
+public List<History> listCarHistory(Long id);
 
 }

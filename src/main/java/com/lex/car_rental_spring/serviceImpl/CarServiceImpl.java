@@ -7,6 +7,7 @@ import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,19 +18,20 @@ public class CarServiceImpl implements CarService {
     public CarRepository carRepository;
 
     @Override
-    public void listAvailableCars() {
+    public List<Car> listAvailableCars() {
         try {
-            carRepository.findByRentedFalse().stream().sorted(Comparator.comparing(Car::getCity).thenComparingInt(Car::getManufactured_year)).forEach(System.out::println);
+            return carRepository.findByRentedFalse().stream().sorted(Comparator.comparing(Car::getCity).thenComparingInt(Car::getManufactured_year)).collect(Collectors.toList());
         } catch (CarNotFoundException c) {
             System.out.println("Nie ma dostępnych samochodów." + c.getMessage());
         }
+        return null;
     }
 
 
     @Override
-    public void listCarHistory(Long id){
+    public List<History> listCarHistory(Long id){
         try{
-            carRepository.findById(id).stream().map(Car::getRentalHistory).collect(Collectors.toList()).forEach(System.out::println);
+            return carRepository.findById(id).get().getRentalHistory();
         } catch(Throwable t) {
             if(!carRepository.existsById(id)){
                 System.out.println("Nie ma samochodu o takim id." + t.getMessage());
@@ -37,15 +39,16 @@ public class CarServiceImpl implements CarService {
                 System.out.println("Historia samochodu jest pusta." + t.getMessage());
             }
         }
+        return null;
     }
 
     @Override
-    public void listRentedCars() {
+    public List<Car> listRentedCars() {
         try {
-            carRepository.findByRentedTrue().stream().sorted(Comparator.comparing(Car::getCity).thenComparingInt(Car::getManufactured_year)).forEach(System.out::println);
+            return carRepository.findByRentedTrue().stream().sorted(Comparator.comparing(Car::getCity).thenComparingInt(Car::getManufactured_year)).collect(Collectors.toList());
         } catch (CarNotFoundException c) {
             System.out.println("Wszystkie samochody są dostępne." + c.getMessage());
         }
-
+        return null;
     }
 }
