@@ -10,10 +10,11 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@Builder(toBuilder = true, builderClassName = "Builder")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CarRental")
+@Table(name = "car_rental")
 public class Car {
     @ToString.Include
     @Id
@@ -24,32 +25,37 @@ public class Car {
     private String brand;
     @ToString.Include
     private String model;
-    private String car_user_id;
-    private String from_date;
-    private String due_date;
+    @Column(name = "car_user_id")
+    private String carUserId;
+    @Column(name = "from_date")
+    private String fromDate;
+    @Column(name = "due_date")
+    private String dueDate;
     @ToString.Include
-    private Integer manufactured_year;
-    private Integer state_value;
-    private Boolean rented;
-    private Integer distance_from_origin;
+    @Column(name = "manufactured_year")
+    private Integer manufacturedYear;
+    @Column(name = "state_value")
+    private Integer stateValue;
+    private Boolean rented = false;
+    @Column(name = "distance_from_origin")
+    private Integer distanceFromOrigin;
 
-    @OneToMany
-    @JoinColumn(name = "history_id")
+    @OneToMany(mappedBy = "car")
     private List<History> rentalHistory;
 
     public Car(String city, String brand, String model, Integer manufactured_year, Integer state_value){
         this.city = city;
         this.brand = brand;
         this.model = model;
-        this.manufactured_year = manufactured_year;
-        this.state_value = state_value;
+        this.manufacturedYear = manufactured_year;
+        this.stateValue = state_value;
     }
 
-    public void setFrom_date(String from_date) {
-        if(this.due_date != null){
-            this.due_date = null;
+    public void setFromDate(String from_date) {
+        if(this.dueDate != null){
+            this.dueDate = null;
         }
-        this.from_date = from_date;
+        this.fromDate = from_date;
     }
 
     @Override

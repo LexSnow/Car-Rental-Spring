@@ -4,24 +4,29 @@ import com.lex.car_rental_spring.entity.Car;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 @Service
 public class CarServiceImpl implements CarService {
 
-    @Autowired
-    public CarRepository carRepository;
+    public final CarRepository carRepository;
+
+    public CarServiceImpl(CarRepository carRepository) {
+        this.carRepository = carRepository;
+    }
 
     @Override
-    public List<Car> listAvailableCars() {
+    public List<Car> listAvailableCars(Integer pageNo, Integer pageSize, String sortBy){
         try {
-            return carRepository.findByRentedFalse(Sort.by(Sort.Direction.DESC, "city").and(Sort.by(Sort.Direction.DESC, "manufactured_year")));
+            Pageable paging = PageRequest.of(pageNo,  pageSize, Sort.by(sortBy));
+            Page<Car> pagedResult = carRepository.findByRentedFalse(paging);
+            return pagedResult.getContent();
         } catch (CarNotFoundException c) {
             System.out.println("Nie ma dostępnych samochodów." + c.getMessage());
         }
@@ -29,18 +34,29 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> listRentedCars() {
+    public List<Car> listRentedCars(Integer pageNo, Integer pageSize, String sortBy) {
         try {
-            return carRepository.findByRentedTrue(Sort.by(Sort.Direction.DESC, "city").and(Sort.by(Sort.Direction.DESC, "manufactured_year")));
+            Pageable paging = PageRequest.of(pageNo,  pageSize, Sort.by(sortBy));
+            Page<Car> pagedResult = carRepository.findByRentedTrue(paging);
+            if(!pagedResult.hasContent()){
+                throw new CarNotFoundException("Wszystkie samochody są dostępne");
+            }
+            return pagedResult.getContent();
         } catch (CarNotFoundException c) {
-            System.out.println("Wszystkie samochody są dostępne." + c.getMessage());
+            System.out.println(c.getMessage());
         }
         return null;
     }
 
     @Override
-    public List<Car> listAllCars(){
-        return carRepository.findAll(Sort.by(Sort.Direction.DESC, "city").and(Sort.by(Sort.Direction.DESC, "manufactured_year")));
+    public List<Car> listAllCars(Integer pageNo, Integer pageSize, String sortBy){
+        try{
+            Pageable paging = PageRequest.of(pageNo,  pageSize, Sort.by(sortBy));
+            Page<Car> pagedResult = carRepository.findAll(paging);
+            return pagedResult.getContent();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
