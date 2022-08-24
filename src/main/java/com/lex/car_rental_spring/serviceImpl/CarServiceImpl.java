@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class CarServiceImpl implements CarService {
 
@@ -22,9 +23,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> listAvailableCars(Integer pageNo, Integer pageSize, String sortBy){
+    public List<Car> listAvailableCars(Integer pageNo, Integer pageSize, String sortBy) {
         try {
-            Pageable paging = PageRequest.of(pageNo,  pageSize, Sort.by(sortBy));
+            Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<Car> pagedResult = carRepository.findByRentedFalse(paging);
             return pagedResult.getContent();
         } catch (CarNotFoundException c) {
@@ -36,9 +37,9 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<Car> listRentedCars(Integer pageNo, Integer pageSize, String sortBy) {
         try {
-            Pageable paging = PageRequest.of(pageNo,  pageSize, Sort.by(sortBy));
+            Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<Car> pagedResult = carRepository.findByRentedTrue(paging);
-            if(!pagedResult.hasContent()){
+            if (!pagedResult.hasContent()) {
                 throw new CarNotFoundException("Wszystkie samochody są dostępne");
             }
             return pagedResult.getContent();
@@ -49,9 +50,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> listAllCars(Integer pageNo, Integer pageSize, String sortBy){
-        try{
-            Pageable paging = PageRequest.of(pageNo,  pageSize, Sort.by(sortBy));
+    public List<Car> listAllCars(Integer pageNo, Integer pageSize, String sortBy) {
+        try {
+            Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<Car> pagedResult = carRepository.findAll(paging);
             return pagedResult.getContent();
         } catch (Exception e) {
@@ -60,8 +61,13 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Optional<Car> getCarById(Long id){
+    public Optional<Car> getCarById(Long id) {
         return carRepository.findById(id);
+    }
+
+    @Override
+    public void saveCar(Car car){
+        carRepository.save(car);
     }
 
 }

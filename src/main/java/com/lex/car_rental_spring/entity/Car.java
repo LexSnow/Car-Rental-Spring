@@ -18,6 +18,7 @@ import java.util.Objects;
 public class Car {
     @ToString.Include
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ToString.Include
     private String city;
@@ -26,7 +27,7 @@ public class Car {
     @ToString.Include
     private String model;
     @Column(name = "car_user_id")
-    private String carUserId;
+    private Long carUserId;
     @Column(name = "from_date")
     private String fromDate;
     @Column(name = "due_date")
