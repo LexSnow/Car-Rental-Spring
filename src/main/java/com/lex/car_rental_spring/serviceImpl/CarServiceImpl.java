@@ -2,7 +2,6 @@ package com.lex.car_rental_spring.serviceImpl;
 
 import com.lex.car_rental_spring.entity.Car;
 import com.lex.car_rental_spring.entity.mapper.CarMapper;
-import com.lex.car_rental_spring.entity.mapper.CarMapperImpl;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.CarService;
@@ -74,7 +73,20 @@ public class CarServiceImpl implements CarService {
     public Optional<Car> getCarById(Long id) {
         return carRepository.findById(id);
     }
-
+    @Override
+    public List<Car> listCarsByCity(Integer pageNo, Integer pageSize, String sortBy, String city){
+        try {
+            Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+            Page<Car> pagedResult = carRepository.findCarsByCity(paging, city);
+            if (!pagedResult.hasContent()) {
+                throw new CarNotFoundException("Nie ma samochodów w danym mieście.");
+            }
+            return pagedResult.getContent();
+        } catch (CarNotFoundException c) {
+            System.out.println(c.getMessage());
+        }
+        return null;
+    }
     @Override
     public void saveCar(Car car) {
         carRepository.save(car);
@@ -94,7 +106,7 @@ public class CarServiceImpl implements CarService {
         carRepository.save(existingCar);
         carMapper.carToCarDTO(existingCar);
     }
-    ;
+
 
     @Override
     public void deleteCar(Long id) {

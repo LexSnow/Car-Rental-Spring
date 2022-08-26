@@ -15,7 +15,7 @@ public interface CarService {
     List<Car> listAllCars(Integer pageNo, Integer pageSize, String sortBy);
 
     Optional<Car> getCarById(Long id);
-
+    List<Car> listCarsByCity(Integer pageNo, Integer pageSize, String sortBy, String city);
     void saveCar(Car car);
     void patchCar(Long id, Map<String, Object> patch);
     void deleteCar(Long id);

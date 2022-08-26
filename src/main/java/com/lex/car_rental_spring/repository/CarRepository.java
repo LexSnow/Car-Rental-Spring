@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface CarRepository extends JpaRepository<Car,Long>  {
     Page<Car> findByRentedFalse(Pageable pageable) throws CarNotFoundException;
     Page<Car> findByRentedTrue(Pageable pageable) throws CarNotFoundException;
-    Car findCarByCity(String city);
+    Page<Car> findCarsByCity(Pageable pageable, String city) throws CarNotFoundException;
 
 }

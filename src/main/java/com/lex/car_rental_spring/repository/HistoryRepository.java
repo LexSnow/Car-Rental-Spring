@@ -1,4 +1,8 @@
 package com.lex.car_rental_spring.repository;
 
-public interface HistoryRepository {
+import com.lex.car_rental_spring.entity.History;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface HistoryRepository extends JpaRepository<History, Long> {
+
 }
