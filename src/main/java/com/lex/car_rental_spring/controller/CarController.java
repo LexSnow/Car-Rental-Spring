@@ -1,15 +1,13 @@
 package com.lex.car_rental_spring.controller;
 
 import com.lex.car_rental_spring.entity.Car;
-import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.serviceImpl.CarServiceImpl;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -55,15 +53,29 @@ public class CarController {
         List<Car> cars = carService.listAvailableCars(pageNo, pageSize, sortBy);
         return new ResponseEntity<>(cars, new HttpHeaders(), HttpStatus.OK);
     }
+
     @PostMapping
-    public ResponseEntity<Car> newCar(@RequestBody Car car){
+    public ResponseEntity<Car> newCar(@RequestBody Car car) {
         carService.saveCar(car);
         return new ResponseEntity<>(car, new HttpHeaders(), HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Car> updateCar(@RequestBody Car car, @PathVariable Long id){
+    public ResponseEntity<Car> updateCar(@RequestBody Car car) {
         carService.saveCar(car);
         return new ResponseEntity<>(car, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Optional<Car>> patchCar(@PathVariable("id") Long id, @RequestBody Map<String, Object> patch) {
+        carService.patchCar(id, patch);
+        Optional<Car> car = carService.getCarById(id);
+        return new ResponseEntity<>(car, new HttpHeaders(), HttpStatus.OK );
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCar(@PathVariable("id") Long id){
+        carService.deleteCar(id);
     }
 }
 
