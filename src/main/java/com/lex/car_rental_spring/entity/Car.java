@@ -38,7 +38,7 @@ public class Car {
     @Column(name = "state_value")
     private Integer stateValue;
     private Boolean rented = false;
-    @Column(name = "distance_from_origin")
+  @Transient
     private Integer distanceFromOrigin;
 
     @OneToMany(mappedBy = "car")

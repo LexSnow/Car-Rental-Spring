@@ -63,6 +63,12 @@ public class CarController {
         List<Car> cars = carService.listCarsByCity(pageNo, pageSize, sortBy, city);
         return new ResponseEntity<>(cars, new HttpHeaders(), HttpStatus.OK);
     }
+    
+    @GetMapping("/nearest/{city}")
+    public ResponseEntity<List<Car>> getNearestCars(@PathVariable("city") String city){
+        List<Car> nearestCars = carService.listNearestCars(city);
+        return new ResponseEntity<>(nearestCars, new HttpHeaders(), HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Car> newCar(@RequestBody Car car) {

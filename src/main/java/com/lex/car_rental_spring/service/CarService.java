@@ -19,5 +19,5 @@ public interface CarService {
     void saveCar(Car car);
     void patchCar(Long id, Map<String, Object> patch);
     void deleteCar(Long id);
-
+    List<Car> listNearestCars(String city);
 }

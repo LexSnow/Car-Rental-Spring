@@ -11,6 +11,12 @@
     <groupId>com.lex</groupId>
     <artifactId>Car_Rental_Spring</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <repositories>
+        <repository>
+            <id>adampol</id>
+            <url>http://nexus.bob/content/repositories/adampol/</url>
+        </repository>
+    </repositories>
     <name>Car Rental Spring</name>
     <description>Car Rental Spring</description>
     <properties>
@@ -31,7 +37,6 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -56,6 +61,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>pl.adampolsa</groupId>
+            <artifactId>mapservice-msg</artifactId>
+            <version>1.6</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -68,7 +78,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -104,6 +113,11 @@
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>0.2.0</version>
                         </dependency>
+                        <dependency>
+                            <groupId>pl.adampolsa</groupId>
+                            <artifactId>mapservice-msg</artifactId>
+                            <version>1.6</version>
+                        </dependency>
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <compilerArg>
@@ -114,7 +128,6 @@
             </plugin>
         </plugins>
     </build>
-
     <profiles>
         <profile>
             <id>production</id>

@@ -1,6 +1,7 @@
 package com.lex.car_rental_spring.serviceImpl;
 
 import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.DistanceCalculator;
 import com.lex.car_rental_spring.entity.mapper.CarMapper;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
@@ -15,9 +16,11 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -87,6 +90,23 @@ public class CarServiceImpl implements CarService {
         }
         return null;
     }
+
+    @Override
+    public List<Car> listNearestCars(String city){
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
+        List<Car> availableCars = carRepository.findByRentedFalse();
+        for(Car car:availableCars){
+            try {
+                Integer distance = distanceCalculator.calculateDistance(city, car.getCity());
+                car.setDistanceFromOrigin(distance);
+            }catch(Throwable c){
+                System.out.println(c.getMessage());
+            }
+        }
+        return availableCars.stream().sorted((Comparator.comparing(Car::getDistanceFromOrigin))).collect(Collectors.toList());
+    }
+
+
     @Override
     public void saveCar(Car car) {
         carRepository.save(car);
