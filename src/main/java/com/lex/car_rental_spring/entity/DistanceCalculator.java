@@ -1,20 +1,26 @@
 package com.lex.car_rental_spring.entity;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pl.adampolsa.mapservice.msg.request.*;
-import pl.adampolsa.mapservice.msg.response.*;
+import pl.adampolsa.mapservice.msg.response.GeocodingLocRespEntry;
+import pl.adampolsa.mapservice.msg.response.GeocodingLocResponse;
+import pl.adampolsa.mapservice.msg.response.GeocodingDistanceResponse;
+import pl.adampolsa.mapservice.msg.request.GeoCodingLocRequest;
+import pl.adampolsa.mapservice.msg.request.GeoCodingDistanceRequest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
 public class DistanceCalculator {
     public GeoCodingLocRequest createLocReq(String city) {
         GeoCodingLocRequest locRequest = new GeoCodingLocRequest();
-        locRequest.setAddress(city);
         locRequest.setUseNominatim(true);
+        locRequest.setAddress(city);
         locRequest.setLimit(1);
         return locRequest;
     }
@@ -56,12 +62,13 @@ public class DistanceCalculator {
             http.setRequestProperty("Accept", "application/json");
             http.setRequestProperty("Content-type", "application/json");
             byte[] out = mapper.writeValueAsBytes(createDistReq(city1, city2));
+            String string = new String(out);
             OutputStream stream = http.getOutputStream();
             stream.write(out);
             BufferedReader output = new BufferedReader(new InputStreamReader(http.getInputStream(), StandardCharsets.UTF_8));
             distanceResponse = mapper.readValue(output, GeocodingDistanceResponse.class);
             http.disconnect();
-            distance = distanceResponse.getDistanceKm().intValue();
+            distance =(Integer) distanceResponse.getDistanceKm().intValue();
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

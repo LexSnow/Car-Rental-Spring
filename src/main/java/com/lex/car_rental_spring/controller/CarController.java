@@ -1,7 +1,9 @@
 package com.lex.car_rental_spring.controller;
 
 import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.Location;
 import com.lex.car_rental_spring.serviceImpl.CarServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +16,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/cars")
 public class CarController {
-    public final CarServiceImpl carService;
-
-    public CarController(CarServiceImpl carService) {
-        this.carService = carService;
-    }
+    @Autowired
+    private CarServiceImpl carService;
 
     @GetMapping
     public ResponseEntity<List<Car>> getAllCars(
@@ -55,12 +54,12 @@ public class CarController {
         return new ResponseEntity<>(cars, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping("/city/{city}")
-    public ResponseEntity<List<Car>> getCarByCity(@PathVariable("city") String city,
+    @GetMapping("/{city}")
+    public ResponseEntity<List<Car>> getCarByCity(@PathVariable("city") Location location,
                                                   @RequestParam(defaultValue = "0") Integer pageNo,
                                                   @RequestParam(defaultValue = "10") Integer pageSize,
                                                   @RequestParam(defaultValue = "brand") String sortBy) {
-        List<Car> cars = carService.listCarsByCity(pageNo, pageSize, sortBy, city);
+        List<Car> cars = carService.listCarsByLocation(pageNo, pageSize, sortBy, location);
         return new ResponseEntity<>(cars, new HttpHeaders(), HttpStatus.OK);
     }
     

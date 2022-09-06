@@ -20,8 +20,9 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ToString.Include
-    private String city;
+    @ManyToOne
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    private Location location;
     @ToString.Include
     private String brand;
     @ToString.Include
@@ -38,14 +39,12 @@ public class Car {
     @Column(name = "state_value")
     private Integer stateValue;
     private Boolean rented = false;
-  @Transient
-    private Integer distanceFromOrigin;
 
     @OneToMany(mappedBy = "car")
     private List<History> rentalHistory;
 
-    public Car(String city, String brand, String model, Integer manufactured_year, Integer state_value){
-        this.city = city;
+    public Car(Location location, String brand, String model, Integer manufactured_year, Integer state_value){
+        this.location = location;
         this.brand = brand;
         this.model = model;
         this.manufacturedYear = manufactured_year;
