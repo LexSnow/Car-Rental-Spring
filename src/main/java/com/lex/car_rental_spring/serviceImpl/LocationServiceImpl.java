@@ -3,6 +3,7 @@ package com.lex.car_rental_spring.serviceImpl;
 import com.lex.car_rental_spring.entity.Car;
 import com.lex.car_rental_spring.entity.DistanceCalculator;
 import com.lex.car_rental_spring.entity.Location;
+import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.LocationRepository;
 import com.lex.car_rental_spring.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Optional<Location> getLocationById(Long id) {
+    public Optional<Location> getLocationById(Long id) throws LocationNotFoundException {
         return locationRepository.findById(id);
     }
 
@@ -50,7 +51,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Location> listAllLocations(Integer pageNo, Integer pageSize, String sortBy) {
+    public List<Location> listAllLocations(Integer pageNo, Integer pageSize, String sortBy) throws LocationNotFoundException{
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<Location> pagedResult = locationRepository.findAll(paging);

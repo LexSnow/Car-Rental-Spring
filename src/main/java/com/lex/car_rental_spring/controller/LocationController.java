@@ -2,6 +2,7 @@ package com.lex.car_rental_spring.controller;
 
 import com.lex.car_rental_spring.entity.Car;
 import com.lex.car_rental_spring.entity.Location;
+import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.serviceImpl.LocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,13 +25,23 @@ public class LocationController {
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "city") String sortBy
     ) {
-        List<Location> locations = locationService.listAllLocations(pageNo, pageSize, sortBy);
-        return new ResponseEntity<>(locations, new HttpHeaders(), HttpStatus.OK);
+        try {
+            List<Location> locations = locationService.listAllLocations(pageNo, pageSize, sortBy);
+            return new ResponseEntity<>(locations, new HttpHeaders(), HttpStatus.OK);
+        }catch (LocationNotFoundException e){
+            System.out.println("Nie znaleziono żadnej lokalizacji." + e.getMessage());
+        }
+        return null;
     }
 
     @GetMapping("/{id}")
     public Optional<Location> getLocationById(@PathVariable Long id) {
-        return locationService.getLocationById(id);
+        try {
+            return locationService.getLocationById(id);
+        }catch(LocationNotFoundException e){
+            System.out.println("Nie znaleziono lokalizacji o podanym id." + e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @PostMapping
