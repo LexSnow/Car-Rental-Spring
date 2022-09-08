@@ -1,7 +1,6 @@
 package com.lex.car_rental_spring.serviceImpl;
 
-import com.lex.car_rental_spring.entity.Car;
-import com.lex.car_rental_spring.entity.DistanceCalculator;
+import com.lex.car_rental_spring.entity.LocationFinder;
 import com.lex.car_rental_spring.entity.Location;
 import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.LocationRepository;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pl.adampolsa.mapservice.msg.request.GeoCodingLocRequest;
 import pl.adampolsa.mapservice.msg.response.GeocodingLocRespEntry;
 import pl.adampolsa.mapservice.msg.response.GeocodingLocResponse;
 
@@ -36,7 +34,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void addLocation(String city) throws Throwable {
         if(!locationRepository.existsByCity(city)){
-            DistanceCalculator calculator = new DistanceCalculator();
+            LocationFinder calculator = new LocationFinder();
             GeocodingLocResponse request = new GeocodingLocResponse();
             try {
                 request = calculator.sendReqGetRes(city);

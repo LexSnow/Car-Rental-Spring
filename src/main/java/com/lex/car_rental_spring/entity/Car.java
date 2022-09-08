@@ -1,10 +1,12 @@
 package com.lex.car_rental_spring.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,36 +29,30 @@ public class Car {
     private String brand;
     @ToString.Include
     private String model;
-    @Column(name = "car_user_id")
-    private Long carUserId;
-    @Column(name = "from_date")
-    private String fromDate;
-    @Column(name = "due_date")
-    private String dueDate;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @ToString.Include
     @Column(name = "manufactured_year")
     private Integer manufacturedYear;
-    @Column(name = "state_value")
-    private Integer stateValue;
+    @Column(name = "odometer")
+    private Integer odometer;
     private Boolean rented = false;
-
+    @Column(name = "creator")
+    private String creator;
+    @Column(name = "creation_time")
+    private LocalTime creationTime = LocalTime.now();
     @OneToMany(mappedBy = "car")
     private List<History> rentalHistory;
 
-    public Car(Location location, String brand, String model, Integer manufactured_year, Integer state_value){
+    public Car(Location location, String brand, String model, Integer manufactured_year, Integer odometer) {
         this.location = location;
         this.brand = brand;
         this.model = model;
         this.manufacturedYear = manufactured_year;
-        this.stateValue = state_value;
+        this.odometer = odometer;
     }
 
-    public void setFromDate(String from_date) {
-        if(this.dueDate != null){
-            this.dueDate = null;
-        }
-        this.fromDate = from_date;
-    }
 
     @Override
     public boolean equals(Object o) {

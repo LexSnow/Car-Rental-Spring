@@ -2,12 +2,12 @@ package com.lex.car_rental_spring.serviceImpl;
 
 import com.lex.car_rental_spring.entity.Car;
 import com.lex.car_rental_spring.entity.Location;
+import com.lex.car_rental_spring.entity.dto.CarCustomerDTO;
 import com.lex.car_rental_spring.entity.mapper.CarMapper;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.CarService;
 import com.vaadin.flow.router.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,15 +16,15 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
 public class CarServiceImpl implements CarService {
-    @Autowired
     private CarRepository carRepository;
+    private LocationServiceImpl locationService;
     private CarMapper carMapper;
 
     @Override
@@ -66,30 +66,9 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Optional<Car> getCarById(Long id) {
-        return carRepository.findById(id);
+    public Car getCarById(Long id) {
+        return carRepository.findById(id).orElseThrow(() -> new NotFoundException("Nie znaleziono samochodu o podanym id."));
     }
-
-    @Override
-    public List<Car> listCarsByLocation(Integer pageNo, Integer pageSize, String sortBy, Location location) {
-        try {
-            Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-            Page<Car> pagedResult = carRepository.findCarsByLocation(paging, location);
-            if (!pagedResult.hasContent()) {
-                throw new CarNotFoundException("Nie ma samochodów w danym mieście.");
-            }
-            return pagedResult.getContent();
-        } catch (CarNotFoundException c) {
-            System.out.println(c.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public List<Car> listNearestCars(String city) {
-        return null;
-    }
-
 
     @Override
     public void saveCar(Car car) {
@@ -98,19 +77,35 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void patchCar(Long id, Map<String, Object> patch) {
-        Car existingCar = carRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Car with id " + id + " has not been found.")));
+        Car existingCar = getCarById(id);
         patch.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Car.class, key);
-            if (field != null) {
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, existingCar, value);
+            if (ReflectionUtils.findField(CarCustomerDTO.class, key) != null) {
+                Field field = ReflectionUtils.findField(Car.class, key);
+                if (field != null) {
+                    field.setAccessible(true);
+                    ReflectionUtils.setField(field, existingCar, value);
+                }
             }
         });
         carRepository.save(existingCar);
-        carMapper.carToCarDTO(existingCar);
     }
 
+    @Override
+    public void rentCar(Long id) throws CarNotFoundException {
+            Map<String, Object> patch = new HashMap<>();
+            patch.put("rented", true);
+            patchCar(id, patch);
+    }
+
+    @Override
+    public void returnCar(Long id, String city) throws CarNotFoundException {
+        Location location =  locationService.getLocationByCity(city);
+        location.setCity(city);
+        Map<String, Object> patch = new HashMap<>();
+        patch.put("rented", false);
+        patch.put("location", location);
+        patchCar(id, patch);
+    }
 
     @Override
     public void deleteCar(Long id) {

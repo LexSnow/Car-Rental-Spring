@@ -1,22 +1,21 @@
 package com.lex.car_rental_spring.entity;
 
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.adampolsa.mapservice.msg.response.GeocodingLocRespEntry;
 import pl.adampolsa.mapservice.msg.response.GeocodingLocResponse;
 import pl.adampolsa.mapservice.msg.response.GeocodingDistanceResponse;
 import pl.adampolsa.mapservice.msg.request.GeoCodingLocRequest;
 import pl.adampolsa.mapservice.msg.request.GeoCodingDistanceRequest;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
-public class DistanceCalculator {
+public class LocationFinder {
     public GeoCodingLocRequest createLocReq(String city) {
         GeoCodingLocRequest locRequest = new GeoCodingLocRequest();
         locRequest.setUseNominatim(true);
@@ -43,6 +42,7 @@ public class DistanceCalculator {
         return locResponse;
     }
 
+    @Deprecated
     public GeoCodingDistanceRequest createDistReq(String city1, String city2) throws Throwable {
         GeoCodingDistanceRequest distanceRequest = new GeoCodingDistanceRequest();
         distanceRequest.addPoint(sendReqGetRes(city1).getEntries().stream().mapToDouble(GeocodingLocRespEntry::getLat).sum(), sendReqGetRes(city1).getEntries().stream().mapToDouble(GeocodingLocRespEntry::getLon).sum());
@@ -50,6 +50,7 @@ public class DistanceCalculator {
         return distanceRequest;
     }
 
+    @Deprecated
     public Integer calculateDistance(String city1, String city2) throws Throwable {
         int distance;
         GeocodingDistanceResponse distanceResponse;
@@ -68,7 +69,7 @@ public class DistanceCalculator {
             BufferedReader output = new BufferedReader(new InputStreamReader(http.getInputStream(), StandardCharsets.UTF_8));
             distanceResponse = mapper.readValue(output, GeocodingDistanceResponse.class);
             http.disconnect();
-            distance =(Integer) distanceResponse.getDistanceKm().intValue();
+            distance = (Integer) distanceResponse.getDistanceKm().intValue();
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

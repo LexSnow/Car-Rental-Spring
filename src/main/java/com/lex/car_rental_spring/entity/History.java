@@ -18,7 +18,10 @@ public class History {
     @ManyToOne
     @JoinColumn(name = "car_id", referencedColumnName = "id")
     private Car car;
-    private String from_date;
-    private String due_date;
-    private Integer state_value;
+    @Column(name = "from_date")
+    private String fromDate;
+    @Column(name = "due_date")
+    private String dueDate;
+    private Integer startOdometer;
+    private Integer endOdometer;
 }
