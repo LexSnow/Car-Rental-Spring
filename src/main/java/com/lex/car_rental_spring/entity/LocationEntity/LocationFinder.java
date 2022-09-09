@@ -1,4 +1,4 @@
-package com.lex.car_rental_spring.entity;
+package com.lex.car_rental_spring.entity.LocationEntity;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,15 +63,14 @@ public class LocationFinder {
             http.setRequestProperty("Accept", "application/json");
             http.setRequestProperty("Content-type", "application/json");
             byte[] out = mapper.writeValueAsBytes(createDistReq(city1, city2));
-            String string = new String(out);
             OutputStream stream = http.getOutputStream();
             stream.write(out);
             BufferedReader output = new BufferedReader(new InputStreamReader(http.getInputStream(), StandardCharsets.UTF_8));
             distanceResponse = mapper.readValue(output, GeocodingDistanceResponse.class);
             http.disconnect();
-            distance = (Integer) distanceResponse.getDistanceKm().intValue();
+            distance = distanceResponse.getDistanceKm().intValue();
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new Throwable(e.getMessage());
         }
         return distance;
     }

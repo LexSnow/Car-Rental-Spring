@@ -1,13 +1,13 @@
-package com.lex.car_rental_spring.serviceImpl;
+package com.lex.car_rental_spring.service;
 
-import com.lex.car_rental_spring.entity.Car;
-import com.lex.car_rental_spring.entity.Location;
-import com.lex.car_rental_spring.entity.dto.CarCustomerDTO;
-import com.lex.car_rental_spring.entity.mapper.CarMapper;
+import com.lex.car_rental_spring.entity.CarEntity.Car;
+import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
+import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
-import com.lex.car_rental_spring.service.CarService;
+import com.lex.car_rental_spring.service.ServiceInterfaces.CarService;
 import com.vaadin.flow.router.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+@AllArgsConstructor
 @Service
 public class CarServiceImpl implements CarService {
-    private CarRepository carRepository;
-    private LocationServiceImpl locationService;
-    private CarMapper carMapper;
+    private final CarRepository carRepository;
+    private final LocationServiceImpl locationService;
 
     @Override
     public List<Car> listAvailableCars(Integer pageNo, Integer pageSize, String sortBy) {
@@ -79,7 +78,7 @@ public class CarServiceImpl implements CarService {
     public void patchCar(Long id, Map<String, Object> patch) {
         Car existingCar = getCarById(id);
         patch.forEach((key, value) -> {
-            if (ReflectionUtils.findField(CarCustomerDTO.class, key) != null) {
+            if (ReflectionUtils.findField(CarDTO.class, key) != null) {
                 Field field = ReflectionUtils.findField(Car.class, key);
                 if (field != null) {
                     field.setAccessible(true);
@@ -92,24 +91,35 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void rentCar(Long id) throws CarNotFoundException {
-            Map<String, Object> patch = new HashMap<>();
-            patch.put("rented", true);
-            patchCar(id, patch);
-    }
-
-    @Override
-    public void returnCar(Long id, String city) throws CarNotFoundException {
-        Location location =  locationService.getLocationByCity(city);
-        location.setCity(city);
+        if (getCarById(id).getRented()) {
+            throw new CarNotFoundException("Samochód jest niedostępny.");
+        }
         Map<String, Object> patch = new HashMap<>();
-        patch.put("rented", false);
-        patch.put("location", location);
+        patch.put("rented", true);
         patchCar(id, patch);
     }
 
     @Override
-    public void deleteCar(Long id) {
-        carRepository.deleteById(id);
+    public void returnCar(Long id, String city) throws CarNotFoundException {
+        if (!getCarById(id).getRented()) {
+            throw new CarNotFoundException("Samochód nie jest aktualnie wypożyczony");
+        } else {
+            Location location = locationService.getLocationByCity(city);
+            location.setCity(city);
+            Map<String, Object> patch = new HashMap<>();
+            patch.put("rented", false);
+            patch.put("location", location);
+            patchCar(id, patch);
+        }
+    }
+
+    @Override
+    public void deleteCar(Long id) throws CarNotFoundException {
+        if (getCarById(id) != null) {
+            carRepository.deleteById(id);
+        } else {
+            throw new CarNotFoundException("Samochód o podanym id nie istnieje.");
+        }
     }
 }
 

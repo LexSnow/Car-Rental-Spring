@@ -1,6 +1,7 @@
-package com.lex.car_rental_spring.entity;
+package com.lex.car_rental_spring.entity.HistoryEntity;
 
 
+import com.lex.car_rental_spring.entity.CarEntity.Car;
 import lombok.*;
 
 import javax.persistence.*;

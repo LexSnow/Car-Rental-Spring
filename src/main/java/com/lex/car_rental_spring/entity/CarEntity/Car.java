@@ -1,6 +1,8 @@
-package com.lex.car_rental_spring.entity;
+package com.lex.car_rental_spring.entity.CarEntity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lex.car_rental_spring.entity.HistoryEntity.History;
+import com.lex.car_rental_spring.entity.LocationEntity.Location;
+import com.lex.car_rental_spring.entity.User;
 import lombok.*;
 import org.hibernate.Hibernate;
 

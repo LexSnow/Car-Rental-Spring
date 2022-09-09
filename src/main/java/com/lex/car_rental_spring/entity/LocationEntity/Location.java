@@ -1,8 +1,9 @@
-package com.lex.car_rental_spring.entity;
+package com.lex.car_rental_spring.entity.LocationEntity;
 
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -21,6 +22,8 @@ public class Location {
     private Double lat;
     @ToString.Include
     private Double lon;
+    private String createdBy;
+    private LocalTime creationTime = LocalTime.now();
 
     public Location(String city) {
         this.city = city;

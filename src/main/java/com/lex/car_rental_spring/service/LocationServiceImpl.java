@@ -1,10 +1,11 @@
-package com.lex.car_rental_spring.serviceImpl;
+package com.lex.car_rental_spring.service;
 
-import com.lex.car_rental_spring.entity.LocationFinder;
-import com.lex.car_rental_spring.entity.Location;
+import com.lex.car_rental_spring.entity.LocationEntity.LocationFinder;
+import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.LocationRepository;
-import com.lex.car_rental_spring.service.LocationService;
+import com.lex.car_rental_spring.service.ServiceInterfaces.LocationService;
+import com.vaadin.flow.router.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +16,7 @@ import pl.adampolsa.mapservice.msg.response.GeocodingLocRespEntry;
 import pl.adampolsa.mapservice.msg.response.GeocodingLocResponse;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class LocationServiceImpl implements LocationService {
     @Autowired
@@ -27,15 +28,15 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Optional<Location> getLocationById(Long id) throws LocationNotFoundException {
-        return locationRepository.findById(id);
+    public Location getLocationById(Long id) {
+        return locationRepository.findById(id).orElseThrow(() -> new NotFoundException("Nie znaleziono lokalizacji o id " + id));
     }
 
     @Override
     public void addLocation(String city) throws Throwable {
-        if(!locationRepository.existsByCity(city)){
+        if (!locationRepository.existsByCity(city)) {
             LocationFinder calculator = new LocationFinder();
-            GeocodingLocResponse request = new GeocodingLocResponse();
+            GeocodingLocResponse request;
             try {
                 request = calculator.sendReqGetRes(city);
             } catch (Throwable e) {
@@ -45,11 +46,13 @@ public class LocationServiceImpl implements LocationService {
             location.setLat(request.getEntries().stream().mapToDouble(GeocodingLocRespEntry::getLat).sum());
             location.setLon(request.getEntries().stream().mapToDouble(GeocodingLocRespEntry::getLon).sum());
             locationRepository.save(location);
+        } else {
+            throw new Throwable("Ta lokalizacja już istnieje.");
         }
     }
 
     @Override
-    public List<Location> listAllLocations(Integer pageNo, Integer pageSize, String sortBy) throws LocationNotFoundException{
+    public List<Location> listAllLocations(Integer pageNo, Integer pageSize, String sortBy) throws LocationNotFoundException {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<Location> pagedResult = locationRepository.findAll(paging);
@@ -59,4 +62,12 @@ public class LocationServiceImpl implements LocationService {
         }
     }
 
+    @Override
+    public void deleteLocation(Long id) throws LocationNotFoundException {
+        if(getLocationById(id) != null){
+           locationRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Lokalizacja o podanym id nie istnieje");
+        }
+    }
 }

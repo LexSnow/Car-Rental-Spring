@@ -1,9 +1,9 @@
-package com.lex.car_rental_spring.entity.dto;
-import com.lex.car_rental_spring.entity.Location;
+package com.lex.car_rental_spring.entity.CarEntity;
+import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import lombok.*;
 @Data
 @Builder
-public class CarCustomerDTO {
+public class CarDTO {
     private Location location;
     private String brand;
     private String model;

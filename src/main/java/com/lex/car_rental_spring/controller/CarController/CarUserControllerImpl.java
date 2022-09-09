@@ -1,13 +1,11 @@
 package com.lex.car_rental_spring.controller.CarController;
 
-import com.lex.car_rental_spring.entity.dto.CarCustomerDTO;
-import com.lex.car_rental_spring.entity.mapper.CarMapperImpl;
+import com.lex.car_rental_spring.controller.CarController.CarInterfaces.CarUserController;
+import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
+import com.lex.car_rental_spring.entity.CarEntity.CarMapperImpl;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
-import com.lex.car_rental_spring.serviceImpl.CarServiceImpl;
+import com.lex.car_rental_spring.service.CarServiceImpl;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/cars")
-public class CarCustomerControllerImpl implements CarCustomerController {
+public class CarUserControllerImpl implements CarUserController {
 
     private final CarServiceImpl carService;
     private final CarMapperImpl carMapper;
@@ -26,49 +24,49 @@ public class CarCustomerControllerImpl implements CarCustomerController {
 
     @Override
     @GetMapping("/available")
-    public ResponseEntity<List<CarCustomerDTO>> availableCars(
+    public ResponseEntity<List<CarDTO>> availableCars(
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "location_id") String sortBy
     ) {
-        List<CarCustomerDTO> cars = carMapper.map(carService.listAvailableCars(pageNo, pageSize, sortBy));
+        List<CarDTO> cars = carMapper.map(carService.listAvailableCars(pageNo, pageSize, sortBy));
         return new ResponseEntity<>(cars, new HttpHeaders(), HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/all")
-    public ResponseEntity<List<CarCustomerDTO>> allCars(@RequestParam(defaultValue = "0") Integer pageNo,
-                                                        @RequestParam(defaultValue = "10") Integer pageSize,
-                                                        @RequestParam(defaultValue = "location_id") String sortBy) {
-        List<CarCustomerDTO> cars = carMapper.map(carService.listAllCars(pageNo, pageSize, sortBy));
+    public ResponseEntity<List<CarDTO>> allCars(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                @RequestParam(defaultValue = "10") Integer pageSize,
+                                                @RequestParam(defaultValue = "location_id") String sortBy) {
+        List<CarDTO> cars = carMapper.map(carService.listAllCars(pageNo, pageSize, sortBy));
         return new ResponseEntity<>(cars, HttpStatus.OK);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<CarCustomerDTO> getCarById(@PathVariable("id") Long id) {
-        CarCustomerDTO car = carMapper.carToCarCustomerDTO(carService.getCarById(id));
+    public ResponseEntity<CarDTO> getCarById(@PathVariable("id") Long id) {
+        CarDTO car = carMapper.carToCarCustomerDTO(carService.getCarById(id));
         return new ResponseEntity<>(car, HttpStatus.OK);
     }
 
     @Override
     @PatchMapping("/rent")
-    public ResponseEntity<String> rentCar(@RequestParam Long id) {
+    public ResponseEntity<String> rentCar(@RequestParam("id") Long id) {
         try {
             carService.rentCar(id);
         } catch (CarNotFoundException e) {
-            return ResponseEntity.badRequest().body("Samochód jest niedostępny.");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok("Samochód został wypożyczony.");
     }
 
     @Override
     @PatchMapping("/return")
-    public ResponseEntity<String> returnCar(@RequestParam Long id, @RequestParam String city) {
+    public ResponseEntity<String> returnCar(@RequestParam("id") Long id, @RequestParam("city") String city) {
         try {
             carService.returnCar(id, city);
         } catch (CarNotFoundException e) {
-            return ResponseEntity.badRequest().body("Podany samochód nie jest aktualnie wypożyczony.");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok("Samochód został zwrócony.");
     }
