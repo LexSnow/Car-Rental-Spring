@@ -9,7 +9,6 @@ public interface HistoryService {
     History getHistory(Long id);
     History getHistoryByCarIdAndDueDate(Long id, Date dueDate);
     List<History> listCarHistory(Long id);
-    void createHistory(Long car_id, Date fromDate, Integer startOdometer);
     void updateHistory(Long id, Date dueDate, Integer endOdometer);
     void deleteHistory(Long id);
 }

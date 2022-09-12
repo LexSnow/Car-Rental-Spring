@@ -33,8 +33,7 @@ public class History {
     @Column(name = "end_odometer")
     private Integer endOdometer;
 
-    public History(Car car, Date fromDate, Integer startOdometer) {
-        this.car = car;
+    public History(Date fromDate, Integer startOdometer) {
         this.fromDate = fromDate;
         this.startOdometer = startOdometer;
     }

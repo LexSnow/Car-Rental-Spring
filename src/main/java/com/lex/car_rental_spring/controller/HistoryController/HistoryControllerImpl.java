@@ -20,16 +20,6 @@ public class HistoryControllerImpl implements HistoryController {
         return ResponseEntity.ok(historyService.listCarHistory(id));
     }
 
-
-    @Override
-    @PostMapping
-    public ResponseEntity<String> createHistory(@RequestBody Long car_id,
-                                                @RequestBody Date fromDate,
-                                                @RequestBody Integer startOdometer) {
-        historyService.createHistory(car_id, fromDate, startOdometer);
-        return ResponseEntity.ok("Pomyślnie utworzono historię.");
-    }
-
     @Override
     @PutMapping
     public ResponseEntity<String> updateHistory(@RequestBody Long id,

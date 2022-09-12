@@ -10,7 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 
 import javax.persistence.*;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +50,7 @@ public class Car {
     @UpdateTimestamp
     private Date modificationTime;
     @OneToMany(mappedBy = "car")
-    private List<History> rentalHistory;
+    private List<History> rentalHistory = new ArrayList<>();
 
     public Car(Location location, String brand, String model, Integer manufactured_year, Integer odometer) {
         this.location = location;
@@ -58,6 +58,9 @@ public class Car {
         this.model = model;
         this.manufacturedYear = manufactured_year;
         this.odometer = odometer;
+    }
+    public void addToHistory(History history){
+        rentalHistory.add(history);
     }
 
 

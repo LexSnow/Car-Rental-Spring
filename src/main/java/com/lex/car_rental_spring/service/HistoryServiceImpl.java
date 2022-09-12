@@ -1,6 +1,5 @@
 package com.lex.car_rental_spring.service;
 
-import com.lex.car_rental_spring.entity.CarEntity.Car;
 import com.lex.car_rental_spring.entity.HistoryEntity.History;
 import com.lex.car_rental_spring.exception.HistoryNotFoundException;
 import com.lex.car_rental_spring.repository.HistoryRepository;
@@ -16,7 +15,6 @@ import java.util.List;
 @Service
 public class HistoryServiceImpl implements HistoryService {
     private final HistoryRepository historyRepository;
-    private final CarServiceImpl carService;
 
     @Override
     public History getHistory(Long id) {
@@ -39,12 +37,6 @@ public class HistoryServiceImpl implements HistoryService {
         }catch(HistoryNotFoundException e){
             throw new RuntimeException(e.getMessage());
         }
-    }
-
-    @Override
-    public void createHistory(Long car_id, Date fromDate, Integer startOdometer) {
-        Car car = carService.getCarById(car_id);
-        History history = new History(car, fromDate, startOdometer);
     }
 
     @Override

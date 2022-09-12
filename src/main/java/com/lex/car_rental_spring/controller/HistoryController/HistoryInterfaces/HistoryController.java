@@ -10,10 +10,6 @@ import java.util.List;
 public interface HistoryController {
     ResponseEntity<List<History>> listCarHistory(Long id);
 
-    ResponseEntity<String> createHistory(@RequestBody Long car_id,
-                                         @RequestBody Date fromDate,
-                                         @RequestBody Integer startOdometer);
-
     ResponseEntity<String> updateHistory(@RequestBody Long id,
                                          @RequestBody Date dueDate,
                                          @RequestBody Integer endOdometer);

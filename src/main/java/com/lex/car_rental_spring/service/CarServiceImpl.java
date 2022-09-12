@@ -14,13 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +28,8 @@ import java.util.Map;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final LocationServiceImpl locationService;
-    private final HistoryServiceImpl historyService;
+    private HistoryServiceImpl historyService;
+
 
     @Override
     public List<Car> listAvailableCars(Integer pageNo, Integer pageSize, String sortBy) {
@@ -72,7 +70,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void saveCar(Location location, String brand, String model, Integer manufacturedYear, Integer odometer){
+    public void saveCar(Location location, String brand, String model, Integer manufacturedYear, Integer odometer) {
         Car car = new Car(location, brand, model, manufacturedYear, odometer);
         carRepository.save(car);
     }
@@ -99,10 +97,11 @@ public class CarServiceImpl implements CarService {
         }
         Date fromDate = new Date();
         Car car = getCarById(id);
+        History history = new History(fromDate, car.getOdometer());
         Map<String, Object> patch = new HashMap<>();
         patch.put("rented", true);
         patchCar(id, patch);
-        historyService.createHistory(id, fromDate, car.getOdometer());
+        car.addToHistory(history);
     }
 
     @Override
@@ -117,7 +116,6 @@ public class CarServiceImpl implements CarService {
                 throw new RuntimeException(e);
             }
             Date dueDate = new Date();
-            Car car = getCarById(id);
             History historyEntry = historyService.getHistoryByCarIdAndDueDate(id, null);
             location.setCity(city);
             Map<String, Object> patch = new HashMap<>();
