@@ -5,7 +5,6 @@ import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.service.LocationServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +22,12 @@ public class LocationAdminControllerImpl implements LocationAdminController {
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "city") String sortBy
     ) {
-        try {
-            List<Location> locations = locationService.listAllLocations(pageNo, pageSize, sortBy);
-            return new ResponseEntity<>(locations, HttpStatus.OK);
-        } catch (LocationNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return ResponseEntity.ok(locationService.listAllLocations(pageNo, pageSize, sortBy));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Location> getLocationById(@PathVariable Long id) {
-        return new ResponseEntity<>(locationService.getLocationById(id), HttpStatus.OK);
+        return ResponseEntity.ok(locationService.getLocationById(id));
     }
 
 

@@ -4,6 +4,8 @@ import com.lex.car_rental_spring.entity.CarEntity.Car;
 import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
 import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
+import com.lex.car_rental_spring.exception.IncorrectRequestException;
+import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.ServiceInterfaces.CarService;
 import com.vaadin.flow.router.NotFoundException;
@@ -33,9 +35,8 @@ public class CarServiceImpl implements CarService {
             Page<Car> pagedResult = carRepository.findByRentedFalse(paging);
             return pagedResult.getContent();
         } catch (CarNotFoundException c) {
-            System.out.println("Nie ma dostępnych samochodów." + c.getMessage());
+            throw new RuntimeException("Nie ma dostępnych samochodów." + c.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -43,14 +44,10 @@ public class CarServiceImpl implements CarService {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<Car> pagedResult = carRepository.findByRentedTrue(paging);
-            if (!pagedResult.hasContent()) {
-                throw new CarNotFoundException("Wszystkie samochody są dostępne");
-            }
             return pagedResult.getContent();
         } catch (CarNotFoundException c) {
-            System.out.println(c.getMessage());
+            throw new RuntimeException("Wszystkie samochody są dostępne." + c.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -60,7 +57,7 @@ public class CarServiceImpl implements CarService {
             Page<Car> pagedResult = carRepository.findAll(paging);
             return pagedResult.getContent();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -70,7 +67,10 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void saveCar(Car car) {
+    public void saveCar(Car car) throws IncorrectRequestException {
+        if (car.getLocation() == null || car.getBrand() == null || car.getModel() == null || car.getManufacturedYear() == null || car.getOdometer() == null) {
+            throw new IncorrectRequestException("Niepoprawne żądanie.");
+        }
         carRepository.save(car);
     }
 
@@ -104,7 +104,12 @@ public class CarServiceImpl implements CarService {
         if (!getCarById(id).getRented()) {
             throw new CarNotFoundException("Samochód nie jest aktualnie wypożyczony");
         } else {
-            Location location = locationService.getLocationByCity(city);
+            Location location;
+            try {
+                location = locationService.getLocationByCity(city);
+            } catch (LocationNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             location.setCity(city);
             Map<String, Object> patch = new HashMap<>();
             patch.put("rented", false);
@@ -115,11 +120,10 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void deleteCar(Long id) throws CarNotFoundException {
-        if (getCarById(id) != null) {
-            carRepository.deleteById(id);
-        } else {
+        if (getCarById(id) == null) {
             throw new CarNotFoundException("Samochód o podanym id nie istnieje.");
         }
+        carRepository.deleteById(id);
     }
 }
 

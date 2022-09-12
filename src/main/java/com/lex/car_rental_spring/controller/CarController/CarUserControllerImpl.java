@@ -38,15 +38,13 @@ public class CarUserControllerImpl implements CarUserController {
     public ResponseEntity<List<CarDTO>> allCars(@RequestParam(defaultValue = "0") Integer pageNo,
                                                 @RequestParam(defaultValue = "10") Integer pageSize,
                                                 @RequestParam(defaultValue = "location_id") String sortBy) {
-        List<CarDTO> cars = carMapper.map(carService.listAllCars(pageNo, pageSize, sortBy));
-        return new ResponseEntity<>(cars, HttpStatus.OK);
+        return ResponseEntity.ok(carMapper.map(carService.listAllCars(pageNo, pageSize, sortBy)));
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<CarDTO> getCarById(@PathVariable("id") Long id) {
-        CarDTO car = carMapper.carToCarCustomerDTO(carService.getCarById(id));
-        return new ResponseEntity<>(car, HttpStatus.OK);
+        return ResponseEntity.ok(carMapper.carToCarCustomerDTO(carService.getCarById(id)));
     }
 
     @Override

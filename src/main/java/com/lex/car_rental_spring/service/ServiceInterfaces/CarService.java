@@ -3,6 +3,7 @@ package com.lex.car_rental_spring.service.ServiceInterfaces;
 
 import com.lex.car_rental_spring.entity.CarEntity.Car;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
+import com.lex.car_rental_spring.exception.IncorrectRequestException;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ public interface CarService {
     void rentCar(Long id) throws CarNotFoundException;
 
     void returnCar(Long id, String city) throws CarNotFoundException;
-    void saveCar(Car car);
+    void saveCar(Car car) throws IncorrectRequestException;
     void patchCar(Long id, Map<String, Object> patch);
     void deleteCar(Long id) throws CarNotFoundException;
 
