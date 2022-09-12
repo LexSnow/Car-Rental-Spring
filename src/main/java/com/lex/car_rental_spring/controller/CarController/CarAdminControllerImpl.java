@@ -2,8 +2,8 @@ package com.lex.car_rental_spring.controller.CarController;
 
 import com.lex.car_rental_spring.controller.CarController.CarInterfaces.CarAdminController;
 import com.lex.car_rental_spring.entity.CarEntity.Car;
+import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
-import com.lex.car_rental_spring.exception.IncorrectRequestException;
 import com.lex.car_rental_spring.service.CarServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -48,12 +48,12 @@ public class CarAdminControllerImpl implements CarAdminController {
 
     @Override
     @PostMapping
-    public ResponseEntity<String> newCar(@RequestBody Car car) {
-        try {
-            carService.saveCar(car);
-        } catch (IncorrectRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> newCar(@RequestBody Location location,
+                                         @RequestBody String brand,
+                                         @RequestBody String model,
+                                         @RequestBody Integer manufacturedYear,
+                                         @RequestBody Integer odometer) {
+        carService.saveCar(location, brand, model, manufacturedYear, odometer);
         return ResponseEntity.ok("Samochód został dodany.");
     }
 

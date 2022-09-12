@@ -1,8 +1,10 @@
 package com.lex.car_rental_spring.controller.CarController.CarInterfaces;
 
 import com.lex.car_rental_spring.entity.CarEntity.Car;
+import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,7 +23,12 @@ public interface CarAdminController {
                                                 @RequestParam(defaultValue = "location_id") String sortBy);
     ResponseEntity<Car> getCarById(@PathVariable Long id);
 
-    ResponseEntity<String> newCar(@RequestBody Car car);
+    @PostMapping
+    ResponseEntity<String> newCar(@RequestBody Location location,
+                                  @RequestBody String brand,
+                                  @RequestBody String model,
+                                  @RequestBody Integer manufacturedYear,
+                                  @RequestBody Integer odometer);
 
     ResponseEntity<String> deleteCar(@RequestParam("id") Long id);
 }

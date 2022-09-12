@@ -5,10 +5,13 @@ import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.entity.User;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,13 +40,15 @@ public class Car {
     @ToString.Include
     @Column(name = "manufactured_year")
     private Integer manufacturedYear;
-    @Column(name = "odometer")
     private Integer odometer;
     private Boolean rented = false;
-    @Column(name = "creator")
     private String creator;
     @Column(name = "creation_time")
-    private LocalTime creationTime = LocalTime.now();
+    @CreationTimestamp
+    private Date creationTime;
+    @Column(name = "modification_time")
+    @UpdateTimestamp
+    private Date modificationTime;
     @OneToMany(mappedBy = "car")
     private List<History> rentalHistory;
 

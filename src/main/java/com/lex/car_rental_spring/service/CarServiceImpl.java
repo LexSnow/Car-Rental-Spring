@@ -2,9 +2,9 @@ package com.lex.car_rental_spring.service;
 
 import com.lex.car_rental_spring.entity.CarEntity.Car;
 import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
+import com.lex.car_rental_spring.entity.HistoryEntity.History;
 import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
-import com.lex.car_rental_spring.exception.IncorrectRequestException;
 import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.ServiceInterfaces.CarService;
@@ -14,10 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +31,7 @@ import java.util.Map;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final LocationServiceImpl locationService;
+    private final HistoryServiceImpl historyService;
 
     @Override
     public List<Car> listAvailableCars(Integer pageNo, Integer pageSize, String sortBy) {
@@ -67,10 +72,8 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void saveCar(Car car) throws IncorrectRequestException {
-        if (car.getLocation() == null || car.getBrand() == null || car.getModel() == null || car.getManufacturedYear() == null || car.getOdometer() == null) {
-            throw new IncorrectRequestException("Niepoprawne żądanie.");
-        }
+    public void saveCar(Location location, String brand, String model, Integer manufacturedYear, Integer odometer){
+        Car car = new Car(location, brand, model, manufacturedYear, odometer);
         carRepository.save(car);
     }
 
@@ -94,13 +97,16 @@ public class CarServiceImpl implements CarService {
         if (getCarById(id).getRented()) {
             throw new CarNotFoundException("Samochód jest niedostępny.");
         }
+        Date fromDate = new Date();
+        Car car = getCarById(id);
         Map<String, Object> patch = new HashMap<>();
         patch.put("rented", true);
         patchCar(id, patch);
+        historyService.createHistory(id, fromDate, car.getOdometer());
     }
 
     @Override
-    public void returnCar(Long id, String city) throws CarNotFoundException {
+    public void returnCar(Long id, String city, Integer endOdometer) throws CarNotFoundException {
         if (!getCarById(id).getRented()) {
             throw new CarNotFoundException("Samochód nie jest aktualnie wypożyczony");
         } else {
@@ -110,11 +116,15 @@ public class CarServiceImpl implements CarService {
             } catch (LocationNotFoundException e) {
                 throw new RuntimeException(e);
             }
+            Date dueDate = new Date();
+            Car car = getCarById(id);
+            History historyEntry = historyService.getHistoryByCarIdAndDueDate(id, null);
             location.setCity(city);
             Map<String, Object> patch = new HashMap<>();
             patch.put("rented", false);
             patch.put("location", location);
             patchCar(id, patch);
+            historyService.updateHistory(historyEntry.getId(), dueDate, endOdometer);
         }
     }
 

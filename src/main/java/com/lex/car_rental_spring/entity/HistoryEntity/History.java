@@ -3,8 +3,12 @@ package com.lex.car_rental_spring.entity.HistoryEntity;
 
 import com.lex.car_rental_spring.entity.CarEntity.Car;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,9 +24,18 @@ public class History {
     @JoinColumn(name = "car_id", referencedColumnName = "id")
     private Car car;
     @Column(name = "from_date")
-    private String fromDate;
-    @Column(name = "due_date")
-    private String dueDate;
+    @CreationTimestamp
+    private Date fromDate;
+    @UpdateTimestamp
+    private Date dueDate;
+    @Column(name = "start_odometer")
     private Integer startOdometer;
+    @Column(name = "end_odometer")
     private Integer endOdometer;
+
+    public History(Car car, Date fromDate, Integer startOdometer) {
+        this.car = car;
+        this.fromDate = fromDate;
+        this.startOdometer = startOdometer;
+    }
 }

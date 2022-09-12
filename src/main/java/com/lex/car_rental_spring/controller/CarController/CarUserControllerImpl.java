@@ -60,9 +60,11 @@ public class CarUserControllerImpl implements CarUserController {
 
     @Override
     @PatchMapping("/return")
-    public ResponseEntity<String> returnCar(@RequestParam("id") Long id, @RequestParam("city") String city) {
+    public ResponseEntity<String> returnCar(@RequestParam("id") Long id,
+                                            @RequestParam("city") String city,
+                                            @RequestParam Integer endOdometer) {
         try {
-            carService.returnCar(id, city);
+            carService.returnCar(id, city, endOdometer);
         } catch (CarNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

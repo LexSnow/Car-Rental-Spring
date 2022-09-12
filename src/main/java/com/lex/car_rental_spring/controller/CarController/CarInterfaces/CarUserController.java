@@ -10,7 +10,9 @@ import java.util.List;
 public interface CarUserController {
     ResponseEntity<String> rentCar(Long id);
 
-    ResponseEntity<String> returnCar(Long id, String city);
+    ResponseEntity<String> returnCar(@RequestParam("id") Long id,
+                                     @RequestParam("city") String city,
+                                     @RequestParam Integer endOdometer);
 
     ResponseEntity<CarDTO> getCarById(@PathVariable("id") Long id);
 
