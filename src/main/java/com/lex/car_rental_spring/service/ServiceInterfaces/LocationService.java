@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LocationService {
     List<Location> listAllLocations(Integer pageNo, Integer pageSize, String sortBy) throws LocationNotFoundException;
-    Location getLocationByCity(String city) throws LocationNotFoundException;
+    Location getLocationByCity(String city);
     Location getLocationById(Long id) throws LocationNotFoundException;
     void addLocation(String city) throws Throwable;
     void deleteLocation(Long id) throws LocationNotFoundException;

@@ -24,9 +24,13 @@ public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
 
     @Override
-    public Location getLocationByCity(String city) throws LocationNotFoundException {
+    public Location getLocationByCity(String city){
         if (!locationRepository.existsByCity(city)) {
-            throw new LocationNotFoundException("Podana lokalizacja nie istnieje.");
+            try {
+                addLocation(city);
+            } catch (IncorrectRequestException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
         return locationRepository.findByCity(city);
     }

@@ -5,6 +5,7 @@ import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
 import com.lex.car_rental_spring.entity.HistoryEntity.History;
 import com.lex.car_rental_spring.entity.LocationEntity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
+import com.lex.car_rental_spring.exception.IncorrectRequestException;
 import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
 import com.lex.car_rental_spring.service.ServiceInterfaces.CarService;
@@ -98,9 +99,8 @@ public class CarServiceImpl implements CarService {
         Date fromDate = new Date();
         Car car = getCarById(id);
         History history = new History(fromDate, car.getOdometer());
-        Map<String, Object> patch = new HashMap<>();
-        patch.put("rented", true);
-        patchCar(id, patch);
+        car.setRented(true);
+        carRepository.save(car);
         car.addToHistory(history);
     }
 
@@ -110,18 +110,13 @@ public class CarServiceImpl implements CarService {
             throw new CarNotFoundException("Samochód nie jest aktualnie wypożyczony");
         } else {
             Location location;
-            try {
-                location = locationService.getLocationByCity(city);
-            } catch (LocationNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            location = locationService.getLocationByCity(city);
             Date dueDate = new Date();
             History historyEntry = historyService.getHistoryByCarIdAndDueDate(id, null);
-            location.setCity(city);
-            Map<String, Object> patch = new HashMap<>();
-            patch.put("rented", false);
-            patch.put("location", location);
-            patchCar(id, patch);
+            Car car = getCarById(id);
+            car.setRented(false);
+            car.setLocation(location);
+            carRepository.save(car);
             historyService.updateHistory(historyEntry.getId(), dueDate, endOdometer);
         }
     }
