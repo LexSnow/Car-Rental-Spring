@@ -1,16 +1,15 @@
 package com.lex.car_rental_spring.entity;
 
 
-import com.lex.car_rental_spring.entity.Car;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Getter
 @Setter
+@Builder(toBuilder = true, builderClassName = "Builder")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

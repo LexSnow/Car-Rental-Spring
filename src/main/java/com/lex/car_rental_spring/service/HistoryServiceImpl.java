@@ -1,24 +1,22 @@
 package com.lex.car_rental_spring.service;
 
-import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.DTO.HistoryDTO;
 import com.lex.car_rental_spring.entity.History;
+import com.lex.car_rental_spring.entity.mapper.HistoryMapper;
 import com.lex.car_rental_spring.exception.HistoryNotFoundException;
 import com.lex.car_rental_spring.repository.HistoryRepository;
 import com.vaadin.flow.router.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
 @Service
 public class HistoryServiceImpl implements HistoryService {
     private final HistoryRepository historyRepository;
+    private final HistoryMapper historyMapper;
 
-    public List<History> listAll() {
-        return historyRepository.findAll();
-    }
 
     @Override
     public History getHistory(Long id) {
@@ -26,9 +24,10 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<History> listCarHistory(Long id) {
+    public List<HistoryDTO> listCarHistory(Long id) {
         try {
-            return historyRepository.findByCarId(id);
+            List<History> history = historyRepository.findByCarId(id);
+            return historyMapper.map(history);
         } catch (HistoryNotFoundException e) {
             throw new RuntimeException(e.getMessage());
         }

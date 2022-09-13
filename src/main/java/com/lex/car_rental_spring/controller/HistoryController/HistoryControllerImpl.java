@@ -1,8 +1,7 @@
 package com.lex.car_rental_spring.controller.HistoryController;
 
+import com.lex.car_rental_spring.entity.DTO.HistoryDTO;
 import com.lex.car_rental_spring.entity.History;
-import com.lex.car_rental_spring.service.CarServiceImpl;
-import com.lex.car_rental_spring.service.HistoryService;
 import com.lex.car_rental_spring.service.HistoryServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +15,9 @@ import java.util.List;
 public class HistoryControllerImpl implements HistoryController {
     private final HistoryServiceImpl historyService;
 
-    @GetMapping
-    public ResponseEntity<List<History>> listAll() {
-        return ResponseEntity.ok(historyService.listAll());
-    }
-
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<List<History>> listCarHistory(@PathVariable Long id) {
+    public ResponseEntity<List<HistoryDTO>> listCarHistory(@PathVariable Long id) {
         return ResponseEntity.ok(historyService.listCarHistory(id));
     }
 
