@@ -1,5 +1,7 @@
-package com.lex.car_rental_spring.entity.CarEntity;
+package com.lex.car_rental_spring.entity.mapper;
 
+import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.DTO.CarDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

@@ -1,5 +1,5 @@
-package com.lex.car_rental_spring.entity.CarEntity;
-import com.lex.car_rental_spring.entity.LocationEntity.Location;
+package com.lex.car_rental_spring.entity.DTO;
+import com.lex.car_rental_spring.entity.Location;
 import lombok.*;
 @Data
 @Builder

@@ -1,10 +1,9 @@
-package com.lex.car_rental_spring.service.ServiceInterfaces;
+package com.lex.car_rental_spring.service;
 
 
-import com.lex.car_rental_spring.entity.CarEntity.Car;
-import com.lex.car_rental_spring.entity.LocationEntity.Location;
+import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
-import com.lex.car_rental_spring.exception.IncorrectRequestException;
 
 import java.util.List;
 import java.util.Map;

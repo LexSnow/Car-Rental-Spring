@@ -1,14 +1,11 @@
 package com.lex.car_rental_spring.service;
 
-import com.lex.car_rental_spring.entity.CarEntity.Car;
-import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
-import com.lex.car_rental_spring.entity.HistoryEntity.History;
-import com.lex.car_rental_spring.entity.LocationEntity.Location;
+import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.DTO.CarDTO;
+import com.lex.car_rental_spring.entity.History;
+import com.lex.car_rental_spring.entity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
-import com.lex.car_rental_spring.exception.IncorrectRequestException;
-import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.CarRepository;
-import com.lex.car_rental_spring.service.ServiceInterfaces.CarService;
 import com.vaadin.flow.router.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,12 +92,14 @@ public class CarServiceImpl implements CarService {
         if (getCarById(id).getRented()) {
             throw new CarNotFoundException("Samochód jest niedostępny.");
         }
-        Date fromDate = new Date();
         Car car = getCarById(id);
-        History history = new History(fromDate, car.getOdometer());
         car.setRented(true);
-        carRepository.save(car);
+        History history = new History(car.getOdometer());
+        history.setStartOdometer(car.getOdometer());
+        history.setCar(car);
+        historyService.updateHistory(history);
         car.addToHistory(history);
+        carRepository.save(car);
     }
 
     @Override
@@ -112,12 +110,14 @@ public class CarServiceImpl implements CarService {
             Location location;
             location = locationService.getLocationByCity(city);
             Date dueDate = new Date();
-            History historyEntry = historyService.getHistoryByCarIdAndDueDate(id, null);
+            History historyEntry = historyService.getHistoryByCarIdAndDueDateIsNull(id);
             Car car = getCarById(id);
             car.setRented(false);
             car.setLocation(location);
             carRepository.save(car);
-            historyService.updateHistory(historyEntry.getId(), dueDate, endOdometer);
+            historyEntry.setDueDate(dueDate);
+            historyEntry.setEndOdometer(endOdometer);
+            historyService.updateHistory(historyEntry);
         }
     }
 

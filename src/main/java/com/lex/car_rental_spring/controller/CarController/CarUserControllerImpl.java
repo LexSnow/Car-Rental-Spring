@@ -1,8 +1,7 @@
 package com.lex.car_rental_spring.controller.CarController;
 
-import com.lex.car_rental_spring.controller.CarController.CarInterfaces.CarUserController;
-import com.lex.car_rental_spring.entity.CarEntity.CarDTO;
-import com.lex.car_rental_spring.entity.CarEntity.CarMapperImpl;
+import com.lex.car_rental_spring.entity.DTO.CarDTO;
+import com.lex.car_rental_spring.entity.mapper.CarMapperImpl;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.service.CarServiceImpl;
 import lombok.AllArgsConstructor;
@@ -48,7 +47,7 @@ public class CarUserControllerImpl implements CarUserController {
     }
 
     @Override
-    @PatchMapping("/rent")
+    @PutMapping("/rent")
     public ResponseEntity<String> rentCar(@RequestParam("id") Long id) {
         try {
             carService.rentCar(id);
@@ -59,7 +58,7 @@ public class CarUserControllerImpl implements CarUserController {
     }
 
     @Override
-    @PatchMapping("/return")
+    @PutMapping("/return")
     public ResponseEntity<String> returnCar(@RequestParam("id") Long id,
                                             @RequestParam("city") String city,
                                             @RequestParam Integer endOdometer) {

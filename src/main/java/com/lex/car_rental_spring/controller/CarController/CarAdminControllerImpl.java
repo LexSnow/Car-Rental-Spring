@@ -1,8 +1,7 @@
 package com.lex.car_rental_spring.controller.CarController;
 
-import com.lex.car_rental_spring.controller.CarController.CarInterfaces.CarAdminController;
-import com.lex.car_rental_spring.entity.CarEntity.Car;
-import com.lex.car_rental_spring.entity.LocationEntity.Location;
+import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.Location;
 import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.service.CarServiceImpl;
 import lombok.AllArgsConstructor;

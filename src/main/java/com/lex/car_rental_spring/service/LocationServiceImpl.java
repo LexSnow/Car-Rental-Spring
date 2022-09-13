@@ -1,11 +1,10 @@
 package com.lex.car_rental_spring.service;
 
-import com.lex.car_rental_spring.entity.LocationEntity.LocationFinder;
-import com.lex.car_rental_spring.entity.LocationEntity.Location;
+import com.lex.car_rental_spring.entity.common.LocationFinder;
+import com.lex.car_rental_spring.entity.Location;
 import com.lex.car_rental_spring.exception.IncorrectRequestException;
 import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.repository.LocationRepository;
-import com.lex.car_rental_spring.service.ServiceInterfaces.LocationService;
 import com.vaadin.flow.router.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

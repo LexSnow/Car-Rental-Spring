@@ -1,7 +1,7 @@
-package com.lex.car_rental_spring.entity.HistoryEntity;
+package com.lex.car_rental_spring.entity;
 
 
-import com.lex.car_rental_spring.entity.CarEntity.Car;
+import com.lex.car_rental_spring.entity.Car;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,26 +15,23 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "car_rental_history")
-@ToString
 public class History {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "car_id", referencedColumnName = "id")
+    @JoinColumn(name = "car_id")
     private Car car;
     @Column(name = "from_date")
     @CreationTimestamp
     private Date fromDate;
-    @UpdateTimestamp
     private Date dueDate;
     @Column(name = "start_odometer")
     private Integer startOdometer;
     @Column(name = "end_odometer")
     private Integer endOdometer;
 
-    public History(Date fromDate, Integer startOdometer) {
-        this.fromDate = fromDate;
+    public History(Integer startOdometer) {
         this.startOdometer = startOdometer;
     }
 }

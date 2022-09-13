@@ -1,6 +1,6 @@
-package com.lex.car_rental_spring.controller.LocationController.LocationInterfaces;
+package com.lex.car_rental_spring.controller.LocationController;
 
-import com.lex.car_rental_spring.entity.LocationEntity.LocationDTO;
+import com.lex.car_rental_spring.entity.DTO.LocationDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;

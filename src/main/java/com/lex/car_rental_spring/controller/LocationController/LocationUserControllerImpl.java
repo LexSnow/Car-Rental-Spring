@@ -1,8 +1,7 @@
 package com.lex.car_rental_spring.controller.LocationController;
 
-import com.lex.car_rental_spring.controller.LocationController.LocationInterfaces.LocationUserController;
-import com.lex.car_rental_spring.entity.LocationEntity.LocationDTO;
-import com.lex.car_rental_spring.entity.LocationEntity.LocationMapper;
+import com.lex.car_rental_spring.entity.DTO.LocationDTO;
+import com.lex.car_rental_spring.entity.mapper.LocationMapper;
 import com.lex.car_rental_spring.service.LocationServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
-package com.lex.car_rental_spring.controller.CarController.CarInterfaces;
+package com.lex.car_rental_spring.controller.CarController;
 
-import com.lex.car_rental_spring.entity.CarEntity.Car;
-import com.lex.car_rental_spring.entity.LocationEntity.Location;
+import com.lex.car_rental_spring.entity.Car;
+import com.lex.car_rental_spring.entity.Location;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
