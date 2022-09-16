@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,6 @@ public class CarUserControllerImpl implements CarUserController {
 
     private final CarServiceImpl carService;
     private final CarMapperImpl carMapper;
-
 
     @Override
     @GetMapping("/available")
@@ -48,6 +48,7 @@ public class CarUserControllerImpl implements CarUserController {
 
     @Override
     @PutMapping("/rent")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> rentCar(@RequestParam("id") Long id) {
         try {
             carService.rentCar(id);
@@ -59,6 +60,7 @@ public class CarUserControllerImpl implements CarUserController {
 
     @Override
     @PutMapping("/return")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> returnCar(@RequestParam("id") Long id,
                                             @RequestParam("city") String city,
                                             @RequestParam Integer endOdometer) {

@@ -6,9 +6,11 @@ import com.lex.car_rental_spring.exception.CarNotFoundException;
 import com.lex.car_rental_spring.service.CarServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @AllArgsConstructor
 @RestController
@@ -18,6 +20,7 @@ public class CarAdminControllerImpl implements CarAdminController {
 
     @Override
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Car>> allCars(@RequestParam(defaultValue = "0") Integer pageNo,
                                              @RequestParam(defaultValue = "10") Integer pageSize,
                                              @RequestParam(defaultValue = "location_id") String sortBy) {
@@ -26,6 +29,7 @@ public class CarAdminControllerImpl implements CarAdminController {
 
     @Override
     @GetMapping("/available")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Car>> availableCars(@RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "10") Integer pageSize,
                                                    @RequestParam(defaultValue = "location_id") String sortBy) {
@@ -33,6 +37,7 @@ public class CarAdminControllerImpl implements CarAdminController {
     }
 
     @GetMapping("/rented")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Car>> rentedCars(@RequestParam(defaultValue = "0") Integer pageNo,
                                                 @RequestParam(defaultValue = "10") Integer pageSize,
                                                 @RequestParam(defaultValue = "location_id") String sortBy) {
@@ -41,12 +46,14 @@ public class CarAdminControllerImpl implements CarAdminController {
 
     @Override
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Car> getCarById(@PathVariable Long id) {
         return ResponseEntity.ok(carService.getCarById(id));
     }
 
     @Override
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> newCar(@RequestBody Location location,
                                          @RequestBody String brand,
                                          @RequestBody String model,
@@ -58,6 +65,7 @@ public class CarAdminControllerImpl implements CarAdminController {
 
     @Override
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteCar(@RequestParam Long id) {
         try {
             carService.deleteCar(id);

@@ -5,10 +5,11 @@ import com.lex.car_rental_spring.exception.LocationNotFoundException;
 import com.lex.car_rental_spring.service.LocationServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//TODO: AdminAuthorization
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/admin/locations")
@@ -16,6 +17,7 @@ public class LocationAdminControllerImpl implements LocationAdminController {
     private final LocationServiceImpl locationService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Location>> getAllLocations(
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize,
@@ -25,12 +27,14 @@ public class LocationAdminControllerImpl implements LocationAdminController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Location> getLocationById(@PathVariable Long id) {
         return ResponseEntity.ok(locationService.getLocationById(id));
     }
 
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> newLocation(@RequestBody String city) {
         try {
             locationService.addLocation(city);
@@ -41,6 +45,7 @@ public class LocationAdminControllerImpl implements LocationAdminController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteLocation(@RequestParam("id") Long id){
         try{
             locationService.deleteLocation(id);
